@@ -1,0 +1,94 @@
+package com.LabAPI.laboratoryAPI.serviceTest;
+
+import com.LabAPI.laboratoryAPI.entities.Affiliate;
+import com.LabAPI.laboratoryAPI.entities.Appointment;
+import com.LabAPI.laboratoryAPI.services.AffiliateService;
+import com.LabAPI.laboratoryAPI.services.AppointmentService;
+import com.LabAPI.laboratoryAPI.services.TestService;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@SpringBootTest
+public class AppointmentServiceTest {
+    @Autowired
+    private AppointmentService appointmentService;
+    @Autowired
+    private AffiliateService affiliateService;
+    @Autowired
+    private TestService testService;
+
+    @Test
+    @Order(1)
+    public void postAppointmentTest() {
+        com.LabAPI.laboratoryAPI.entities.Test test = new com.LabAPI.laboratoryAPI.entities.Test("Covid", "Covid test");
+        testService.postTest(test);
+        Affiliate affiliate = new Affiliate("Jesusa", 21, "laurita_ballesteritos@gmail.com");
+        affiliateService.putAffiliate(affiliate);
+        Appointment appointmentToSave = new Appointment(new Date(11, 03, 2000), new Date(0, 0, 0, 14, 0, 0), new com.LabAPI.laboratoryAPI.entities.Test(1L, "Covid", "Covid test"), new Affiliate(1L, "Jesusa", 21, "laurita_ballesteritos@gmail.com"));
+        Appointment appointmentSaved = appointmentService.postAppointment(appointmentToSave);
+        assertEquals(1L, appointmentSaved.getId());
+    }
+    @Test
+    @Order(2)
+    public void findAppointmentByIdTest(){
+        Long idToFind=1L;
+        Optional<Appointment> appointmentSearched = appointmentService.getOneAppointment(idToFind);
+        assertNotNull(appointmentSearched.get());
+    }
+
+    @Test
+    @Order(3)
+    public void findAppointmentByDateTest(){
+        LocalDate dateToFind=LocalDate.of(2000, 3, 11);
+        List<Appointment> appointmentSearched = appointmentService.getByDate(dateToFind);
+        assertNotNull(!appointmentSearched.isEmpty());
+    }
+
+    @Test
+    @Order(4)
+    public void findAppointmentByAffiliateTest(){
+        Long idToFind=1L;
+        List<Appointment> appointmentSearched = appointmentService.getByAffiliate(idToFind);
+        assertNotNull(!appointmentSearched.isEmpty());
+    }
+
+
+    @Test
+    @Order(5)
+    public void findAppointmentTest(){
+        List<Appointment> appointments = appointmentService.getAllAppointment();
+        assertEquals(1,appointments.size());
+    }
+
+    @Test
+    @Order(6)
+    public void putAppointmentTest(){
+        Appointment appointmentToUpdate= new Appointment(1L, new Date(12, 03, 2000), new Date(0, 0, 0, 13, 0, 0), new com.LabAPI.laboratoryAPI.entities.Test(1L, "Covid", "Covid test"), new Affiliate(1L, "Jesusa", 21, "laurita_ballesteritos@gmail.com"));
+        appointmentService.putAppointment(appointmentToUpdate);
+        Optional<Appointment> appointmentUpdated=appointmentService.getOneAppointment(1L);
+        assertEquals(new Date(12, 03, 2000), appointmentUpdated.get().getDate());
+    }
+
+    @Test
+    @Order(7)
+    public void deleteAppointmentTest(){
+        Long idToDelete=1L;
+        appointmentService.deleteAppointment(idToDelete);
+        Optional<Appointment> appointmentRemoved=appointmentService.getOneAppointment(idToDelete);
+        assertFalse(appointmentRemoved.isPresent());
+    }
+}
+
+
