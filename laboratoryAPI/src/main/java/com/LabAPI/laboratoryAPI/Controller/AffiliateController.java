@@ -40,8 +40,7 @@ public class AffiliateController {
 
     @PostMapping
     public ResponseEntity<Affiliate> post(@RequestBody Affiliate affiliate){
-        Affiliate saveAffiliate= affiliateService.postAffilliate(affiliate);
-        if(saveAffiliate.getMail() != null){
+        if(affiliate.getMail() != null && affiliate.getName() != null && affiliate.getAge() != null){
             affiliateService.postAffilliate(affiliate);
             return ResponseEntity.status(201).body(affiliate);
         }else{

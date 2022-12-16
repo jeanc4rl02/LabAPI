@@ -50,8 +50,6 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentService.getByAffiliate(affiliate_id)) ;
     }
 
-
-
     @GetMapping(params = "date")
     public ResponseEntity<List<Appointment>> getByDate(@RequestParam("date") String date){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -59,12 +57,10 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentService.getByDate(myDate));
     }
 
-
-
     @PostMapping
     public ResponseEntity<Appointment> post(@RequestBody Appointment appointment){
-        Appointment saveAppointment = appointmentService.postAppointment(appointment);
-        if(saveAppointment.getId() != null){
+//        Appointment saveAppointment = appointmentService.postAppointment(appointment);
+        if(appointment.getDate() != null && appointment.getHour() != null && appointment.getTestId() != null && appointment.getAffiliateId() != null){
             appointmentService.postAppointment(appointment);
             return ResponseEntity.status(201).body(appointment);
         } else {

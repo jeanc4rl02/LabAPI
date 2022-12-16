@@ -29,6 +29,8 @@ public class AppointmentServiceTest {
     @Autowired
     private TestService testService;
 
+    // TEST OK -------------------------------------------------------------------------------------------------------
+
     @Test
     @Order(1)
     public void postAppointmentTest() {
@@ -53,7 +55,7 @@ public class AppointmentServiceTest {
     public void findAppointmentByDateTest(){
         LocalDate dateToFind=LocalDate.of(2000, 3, 11);
         List<Appointment> appointmentSearched = appointmentService.getByDate(dateToFind);
-        assertNotNull(!appointmentSearched.isEmpty());
+        assertTrue(appointmentSearched.isEmpty());
     }
 
     @Test
@@ -63,7 +65,6 @@ public class AppointmentServiceTest {
         List<Appointment> appointmentSearched = appointmentService.getByAffiliate(idToFind);
         assertNotNull(!appointmentSearched.isEmpty());
     }
-
 
     @Test
     @Order(5)
@@ -89,6 +90,70 @@ public class AppointmentServiceTest {
         Optional<Appointment> appointmentRemoved=appointmentService.getOneAppointment(idToDelete);
         assertFalse(appointmentRemoved.isPresent());
     }
+
+    // BAD TEST -------------------------------------------------------------------------------------------------------
+
+    @Test
+    @Order(8)
+    public void postAppointmentBADTest() {
+        com.LabAPI.laboratoryAPI.entities.Test test = new com.LabAPI.laboratoryAPI.entities.Test("Covid", "Covid test");
+        testService.postTest(test);
+        Affiliate affiliate = new Affiliate("Laura", 21, "laurita_ballesteritos2@gmail.com");
+        affiliateService.putAffiliate(affiliate);
+        Appointment appointmentToSave = new Appointment(new Date(11, 03, 2000), new Date(0, 0, 0, 14, 0, 0), new com.LabAPI.laboratoryAPI.entities.Test(2L, "Covid", "Covid test"), new Affiliate(2L, "Jesusa", 21, "laurita_ballesteritos@gmail.com"));
+        Appointment appointmentSaved = appointmentService.postAppointment(appointmentToSave);
+        assertNotEquals(1L, appointmentSaved.getId());
+    }
+    @Test
+    @Order(9)
+    public void findAppointmentByIdBADTest(){
+        Long idToFind2=2L;
+        Optional<Appointment> appointmentSearched = appointmentService.getOneAppointment(idToFind2);
+        assertNotEquals(appointmentSearched.get(), null);
+    }
+
+    @Test
+    @Order(10)
+    public void findAppointmentByDateBADTest(){
+        LocalDate dateToFind=LocalDate.of(2000, 3, 11);
+        List<Appointment> appointmentSearched = appointmentService.getByDate(dateToFind);
+        assertFalse(!appointmentSearched.isEmpty());
+    }
+
+    @Test
+    @Order(11)
+    public void findAppointmentByAffiliateBADTest(){
+        Long idToFind=2L;
+        List<Appointment> appointmentSearched = appointmentService.getByAffiliate(idToFind);
+        assertFalse(appointmentSearched.isEmpty());
+    }
+
+
+    @Test
+    @Order(12)
+    public void findAppointmentBADTest(){
+        List<Appointment> appointments = appointmentService.getAllAppointment();
+        assertNotEquals(2,appointments.size());
+    }
+
+    @Test
+    @Order(13)
+    public void putAppointmentBADTest(){
+        Appointment appointmentToUpdate= new Appointment(2L, new Date(12, 03, 2000), new Date(0, 0, 0, 13, 0, 0), new com.LabAPI.laboratoryAPI.entities.Test(1L, "Covid", "Covid test"), new Affiliate(1L, "Jesusa", 21, "laurita_ballesteritos@gmail.com"));
+        appointmentService.putAppointment(appointmentToUpdate);
+        Optional<Appointment> appointmentUpdated=appointmentService.getOneAppointment(2L);
+        assertNotEquals(new Date(14, 03, 2001), appointmentUpdated.get().getDate());
+    }
+
+    @Test
+    @Order(14)
+    public void deleteAppointmentBADTest(){
+        Long idToDelete=2L;
+        appointmentService.deleteAppointment(idToDelete);
+        Optional<Appointment> appointmentRemoved=appointmentService.getOneAppointment(idToDelete);
+        assertTrue(!appointmentRemoved.isPresent());
+    }
+
 }
 
 

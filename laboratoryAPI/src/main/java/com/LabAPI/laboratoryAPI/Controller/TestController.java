@@ -40,8 +40,7 @@ public class TestController {
 
     @PostMapping
     public ResponseEntity<Test> post(@RequestBody Test test){
-        Test saveTest = testService.postTest(test);
-        if(saveTest.getId() != null){
+        if(test.getName() != null && test.getDescription() != null){
             testService.postTest(test);
             return ResponseEntity.status(201).body(test);
         } else {

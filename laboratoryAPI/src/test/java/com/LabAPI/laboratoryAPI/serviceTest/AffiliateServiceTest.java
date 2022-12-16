@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AffiliateServiceTest {
     @Autowired
     private AffiliateService affiliateService;
-        // TEST OK -------------------------------------------------------------------------------------------------------
+    // TEST OK -------------------------------------------------------------------------------------------------------
     @Test
     @Order(1)
     public void postAffiliateTestOK(){
